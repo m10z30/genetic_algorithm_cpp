@@ -46,7 +46,7 @@ int generations = 0; // generations count
 
 double mutation_rate = 1; // percentage
 
-double total_fitness;
+double total_fitness;  // total fitness of the generation
 
 
 // DNA class reperesents a one population
@@ -59,17 +59,7 @@ public:
     }
     DNA(string gen){ // parametrized constructor will receive a phrase to assign it to the phrase of the DNA
         genes = gen;
-        //calculate_fitness(); // calculating the fitness after receiving the phrase
     }
-
-    /*
-    void lower_case(){ // converts all upper case to lower
-        for(int i = 0; i < genes.length();i++){
-            if(genes[i] >= 65 and genes[i] <= 90)
-                genes[i] += 32;
-        }
-    }
-    */
 
     void random_genes(){ // make a random phrase to the DNA
         for(int i = 0; i < target.length();i++){
@@ -233,9 +223,10 @@ bool loop(){ // runs 30 times in a second if returns false the program stops
     cout<<"best phrase:"<<endl<<endl;
     cout<<"         "<<best.get_genes()<<endl<<endl;
 
+    cout<<"best fitness: "<<best.get_fitness()*100<<"%"<<endl<<endl;
+
     cout<<"total fitness: "<< total_fitness<<"%"<<endl;
     cout<<"total generations: "<<generations<<endl;
-
 
 
 
@@ -265,7 +256,7 @@ int main()
 
     //loop runs 30 time in a second
     while(loop()){
-       //Sleep(1000/30);// time delay
+       Sleep(1000/30);// time delay
     }
 
 }
