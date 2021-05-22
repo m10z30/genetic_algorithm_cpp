@@ -5,20 +5,21 @@
 
 using namespace std;
 
-//////////////////random functions/////////////////////
-
-double randf(){ // returns a value between 0 and 1
-    double res = rand() % 1001;
-    res /= 1000;
-    return res;
-}
-
 
 // map a value
 double map(double value, double min1, double max1, double min2, double max2){
     return min2+(max2-min2)*((value-min1)/(max1-min1));
 }
 
+
+
+//////////////////random functions/////////////////////
+
+double randf(){ // returns a value between 0 and 1
+    double res = rand() % 101;
+    res /= 100;
+    return res;
+}
 
 double random(double max){ // returns a random value between 0 and max
     return randf() * max;
@@ -29,19 +30,80 @@ double random(double min,double max){ // returns a random value between min and 
     return map(randf(),0,1,min,max);
 }
 
-
-
 char rand_char(){ // returns a random charactor
-    return (int) random(32,126);
+    return round(random(32,126));
 }
+
+
+
+
+
+
+
+/////////////////arrayList class//////////////////
+//arrayList is a resizable array class that can only grow
+// the array and cannot shrink it and can only add elements
+// and cannot delete them
+
+
+template<typename T>
+class arrayList{
+    int maxsize;
+    int arraysize = -1;
+    T *arr;
+
+    void cpy(T *src,T *dis,int s){
+        for(int i = 0; i < s;i++){
+            dis[i] = src[i];
+        }
+    }
+
+
+public:
+    arrayList(){
+        maxsize = 1;
+        arr = new T[maxsize];
+    }
+
+    void add(T item){
+        if(arraysize == maxsize-1){
+            T *temp = new T[maxsize];
+            int oldsize = maxsize;
+            cpy(arr,temp,oldsize);
+            delete[] arr;
+            maxsize *= 2;
+            arr = new T[maxsize];
+            cpy(temp,arr,oldsize);
+            delete[] temp;
+        }
+        arr[++arraysize] = item;
+    }
+
+    T get(int index){
+        return arr[index];
+    }
+
+    int getSize(){
+        return arraysize+1;
+    }
+
+    ~arrayList(){
+        delete[] arr;
+    }
+
+};
+
+
+
+
 
 
 
 ////////////// main variables /////////////////////
 
-const int pop_count = 100; // population number for each generation
+const int pop_count = 1000; // population number for each generation
 
-string target = "to be or not to be"; // target phrase
+string target = "the target phrase"; // target phrase
 int generations = 0; // generations count
 
 double mutation_rate = 1; // percentage
@@ -49,7 +111,8 @@ double mutation_rate = 1; // percentage
 double total_fitness;  // total fitness of the generation
 
 
-// DNA class reperesents a one population
+
+// DNA class represents a one population
 class DNA{
     string genes;   // the phrase of the DNA
     double fitness; // the fitness of the DNA
@@ -59,6 +122,7 @@ public:
     }
     DNA(string gen){ // parametrized constructor will receive a phrase to assign it to the phrase of the DNA
         genes = gen;
+
     }
 
     void random_genes(){ // make a random phrase to the DNA
@@ -149,11 +213,11 @@ void matingPool(DNA pop[]){
     // element we will add the element few times to make the higher the fitness
     // the higher chance the of the element to be picked to be a parent
     // without leaving no chance to low fitness population
-    vector<DNA> mating_pool;
+    arrayList<DNA> mating_pool;
     for(int i = 0; i < pop_count;i++){
         int probablity = round(random(pop[i].get_fitness() * 10)) + 1;
         for(int j = 0;j < probablity;j++){
-            mating_pool.push_back(pop[i]);
+            mating_pool.add(pop[i]);
         }
     }
 
@@ -163,20 +227,20 @@ void matingPool(DNA pop[]){
 
     // making a cross over from the mating pool with random parents
     for(int i = 0; i < pop_count;i++){
-        int indexA = floor(random(mating_pool.size()));
-        int indexB = floor(random(mating_pool.size()));
+        int indexA = floor(random(mating_pool.getSize()));
+        int indexB = floor(random(mating_pool.getSize()));
 
-        if(indexA >= mating_pool.size()){
-            indexA = mating_pool.size() - 1;
+        if(indexA >= mating_pool.getSize()){
+            indexA = mating_pool.getSize() - 1;
         }
 
-        if(indexB >= mating_pool.size()){
-            indexB = mating_pool.size() - 1;
+        if(indexB >= mating_pool.getSize()){
+            indexB = mating_pool.getSize() - 1;
         }
 
 
-        DNA parentA = mating_pool.at(indexA);
-        DNA parentB = mating_pool.at(indexB);
+        DNA parentA = mating_pool.get(indexA);
+        DNA parentB = mating_pool.get(indexB);
         DNA child = crossover(parentA,parentB);
         new_population[i] = child;
     }
@@ -213,7 +277,7 @@ bool loop(){ // runs 30 times in a second if returns false the program stops
 
     system("CLS"); // clearing the screen
 
-    // calculating the fitness and printing the best
+    // calculating the fitness and return the best
     DNA best = calculate_fitness(population);
 
     // displaying information
@@ -256,7 +320,7 @@ int main()
 
     //loop runs 30 time in a second
     while(loop()){
-       Sleep(1000/30);// time delay
+       //Sleep(1000/30);// time delay
     }
 
 }
