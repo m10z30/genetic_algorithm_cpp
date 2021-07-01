@@ -30,7 +30,7 @@ double random(double min,double max){ // returns a random value between min and 
     return map(randf(),0,1,min,max);
 }
 
-char rand_char(){ // returns a random charactor
+char rand_char(){ // returns a random character
     return round(random(32,126));
 }
 
@@ -41,7 +41,7 @@ char rand_char(){ // returns a random charactor
 
 
 /////////////////arrayList class//////////////////
-//arrayList is a resizable array class that can only grow
+// arrayList is a resize-able array class that can only grow
 // the array and cannot shrink it and can only add elements
 // and cannot delete them
 
@@ -103,12 +103,12 @@ public:
 
 const int pop_count = 1000; // population number for each generation
 
-string target = "the target phrase"; // target phrase
+string target = "to be or not to be"; // target phrase
 int generations = 0; // generations count
 
 double mutation_rate = 1; // percentage
 
-double total_fitness;  // total fitness of the generation
+double total_fitness;  // total fitness of the current generation
 
 
 
@@ -122,7 +122,6 @@ public:
     }
     DNA(string gen){ // parametrized constructor will receive a phrase to assign it to the phrase of the DNA
         genes = gen;
-
     }
 
     void random_genes(){ // make a random phrase to the DNA
@@ -211,7 +210,7 @@ DNA calculate_fitness(DNA pop[]){
 void matingPool(DNA pop[]){
     // making the mating pool according to the fitness of every population
     // element we will add the element few times to make the higher the fitness
-    // the higher chance the of the element to be picked to be a parent
+    // the higher chance of the element to be picked to be a parent
     // without leaving no chance to low fitness population
     arrayList<DNA> mating_pool;
     for(int i = 0; i < pop_count;i++){
@@ -227,16 +226,8 @@ void matingPool(DNA pop[]){
 
     // making a cross over from the mating pool with random parents
     for(int i = 0; i < pop_count;i++){
-        int indexA = floor(random(mating_pool.getSize()));
-        int indexB = floor(random(mating_pool.getSize()));
-
-        if(indexA >= mating_pool.getSize()){
-            indexA = mating_pool.getSize() - 1;
-        }
-
-        if(indexB >= mating_pool.getSize()){
-            indexB = mating_pool.getSize() - 1;
-        }
+        int indexA = round(random(mating_pool.getSize()-1));
+        int indexB = round(random(mating_pool.getSize()-1));
 
 
         DNA parentA = mating_pool.get(indexA);
@@ -265,15 +256,14 @@ DNA population[pop_count]; // the main population
 
 
 void setup(){ // runs once at the start of the program
-
-    //intialize population with random genes
+    // initialize population with random genes
     for(int i = 0; i < pop_count;i++){
         population[i].random_genes();
     }
 }
 
 
-bool loop(){ // runs 30 times in a second if returns false the program stops
+bool loop(){ // returns false the program stops
 
     system("CLS"); // clearing the screen
 
@@ -318,9 +308,7 @@ int main()
 
 
 
-    //loop runs 30 time in a second
-    while(loop()){
-       //Sleep(1000/30);// time delay
-    }
+    // runs loop function until it returns false
+    while(loop());
 
 }
