@@ -1,7 +1,0 @@
-# depslib dependency file v1.0
-1612969335 source:e:\c++ projects\data structures\genatic_algorithm\main.cpp
-	<iostream>
-	<random>
-	<time.h>
-	<windows.h>
-
